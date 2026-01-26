@@ -98,10 +98,67 @@ where title REGEXP '[Ee]$';
 ---------------------------------------------
 -- match
 
+select title, rental_rate, rental_rate^3 as double_rate
+from sakila.film;
+
+-- select amount, cast(amount as signed) as amount_str
+
+select customer_id,
+		count(payment_id) as payments,
+        sum(amount) as total_paid,
+        sum(amount)/count(payment_id) as avg_payment
+from sakila.payment
+Group by customer_id;
+
+select rental_duration, cost_efficiency_dup1 from sakila.film;
+
+select rental_duration from sakila.film;
+
+ALTER TABLE sakila.film
+ADD COLUMN cost_efficiency_dup1 DECIMAL(6,2);
+
+SET SQL_SAFE_UPDATES = 0;
 
 
+UPDATE sakila.film
+set cost_efficiency_dup1 = rental_duration * 2
+where length is not null;
 
+select * from sakila.film;
 
+select customer_id, (rand() * 100), floor(rand() * 100) as random_score
+from sakila.customer
+limit 5;
+
+select film_id, rental_duration, power(rental_duration, 2) as squared_duration
+from sakila.film
+limit 5;
+
+select film_id, length, mod(length, 60) as minute_over_hour
+from sakila.film;
+
+select rental_rate, floor(rental_rate) as floor_value, ceil(rental_rate) as ceil_value
+from sakila.film;
+
+select rental_rate, round(replacement_cost / rental_rate, 0), round(replacement_cost / rental_rate, 1) as ratio
+from sakila.film;
+
+select rental_id, return_date, rental_date, datediff(return_date, rental_date) as days_rented
+from sakila.rental
+where return_date is not null;
+
+select last_update, yearweek(last_update), monthname(last_update) from sakila.film;
+
+select rental_date, year(rental_date) from sakila.rental;
+
+select payment_date from sakila.payment;
+
+select payment_date, date(payment_date) as pay_date, sum(amount) as total_paid
+ from sakila.payment
+ group by payment_date, date(payment_date)
+ order by pay_date desc;
+ 
+ 
 
 
 
