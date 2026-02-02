@@ -1,150 +1,3 @@
------------------------------------------
-#Substring 
-SELECT title, SUBSTRING(title, 1, 3) AS short_title 
-FROM sakila.film;
-
-----------------------
-#concatination
-
-SELECT CONCAT(first_name, '@ ', last_name) AS full_name 
-FROM sakila.customer;
-
-------------------------------
-#length 
-
-SELECT title, LENGTH(title) AS title_length 
-FROM sakila.film 
-WHERE LENGTH(title) > 15;
---------------------------------------
-#substring with locate 
-select email from sakila.customer;
-SELECT email,
-       SUBSTRING(email, LOCATE('@', email)+1) AS domain
-FROM sakila.customer;
-
-SELECT 
-  email,
-  substring_index(SUBSTRING(email, LOCATE('@', email) + 1), '.', 1) AS domain
-FROM 
-  sakila.customer;
-  
-select substring_index(email,'@', -1) from sakila.customer;
-
---------------------------
-SELECT title
-FROM sakila.film
-WHERE UPPER(title) LIKE '%LOVELY%' OR UPPER(title) LIKE '%MAN';
-
-select title, lower(title) as lower_titles
-FROM sakila.film;
---------------------------------------------------
-SELECT LEFT(title, 1) AS first_letter, right(title,1) as last_letter, COUNT(*) AS film_count
-FROM sakila.film
-GROUP BY LEFT(title, 1), right(title,1) 
-ORDER BY film_count DESC;
------
-SELECT LEFT(title,1) AS first_letter, right(title, 1) as last_letter, title 
-from sakila.film;
-
--------------------
-SELECT last_name,
-       CASE 
-           WHEN LEFT(last_name, 1) BETWEEN 'A' AND 'M' THEN 'Group A-M'
-           WHEN LEFT(last_name, 1) BETWEEN 'N' AND 'Z' THEN 'Group N-Z'
-           ELSE 'Other'
-       END AS group_label
-FROM sakila.customer;
-
----------------
-
-SELECT title, REPLACE(title, 'A', 'x') AS cleaned_title
-FROM sakila.film
-WHERE title LIKE '% ' '%';
-
------------------
-SELECT customer_id, last_name
-FROM sakila.customer
-WHERE last_name REGEXP '[^aeiouAEIOU]{3}'; -- decode
-
-SELECT title
-FROM sakila.film
-WHERE title REGEXP '[aeiouAEIOU]$';
-
-select right(title,1), count(*)
-FROM sakila.film
-WHERE title REGEXP '[aeiouAEIOU]$'
-group by right(title,1)
-;
---------------------------------
-#math 
-
-SELECT title, rental_rate, rental_rate * 2 AS double_rate
-FROM sakila.film;
-------------------------
----------------
-#math 
-
-SELECT customer_id,
-       COUNT(payment_id) AS payments,
-       SUM(amount) AS total_paid,
-       SUM(amount) / COUNT(payment_id) AS avg_payment
-FROM sakila.payment
-GROUP BY customer_id;
-------------
-
-ALTER TABLE sakila.film
-ADD COLUMN cost_efficiency DECIMAL(6,2);
-
-
-UPDATE sakila.film
-SET cost_efficiency = replacement_cost / length
-WHERE length IS NOT NULL;
-
-
-select * from sakila.film;
----------------------------------
-#date diff 
-
-SELECT rental_id, DATEDIFF(return_date, rental_date) AS days_rented
-FROM sakila.rental
-WHERE return_date IS NOT NULL;
-
-#date time 
-
-select month(last_update) from sakila.film;
-
-SELECT payment_date FROM sakila.payment;
-
-SELECT DATE(payment_date) AS pay_date, SUM(amount) AS total_paid
-FROM sakila.payment
-GROUP BY DATE(payment_date)
-ORDER BY pay_date DESC;
-
-#Find Customers Who Paid in the Last 24 Hours
-
-select * from sakila.payment;
-
-SELECT customer_id, amount, payment_date
-FROM sakila.payment
-WHERE payment_date >= NOW() - INTERVAL 1 DAY;
-
-select max(payment_date) FROM sakila.payment;
-
-SELECT customer_id, amount, payment_date
-FROM sakila.payment
-WHERE payment_date >= (
-    SELECT MAX(payment_date) - INTERVAL 1 day
-    FROM sakila.payment
-);
-
-select now()  - INTERVAL 1 DAY as yesterday;
-
-
-SELECT CONCAT('Today is: ', CURDATE()) AS message;
-SELECT CONCAT('Today is: ', now()) AS message;
-
-SELECT NOW(), CURDATE(), CURRENT_TIME;
-
 --------------------------------------------------------
 #sub queries 
 
@@ -255,3 +108,14 @@ WHERE amount > (
     WHERE p2.customer_id = p1.customer_id
 );
 select amount from sakila.customer;
+
+-- one to one
+-- user to user profile
+
+-- one to many
+-- user to orders
+
+-- many to one
+-- orders to user
+
+-- many to many
